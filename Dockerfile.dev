@@ -1,0 +1,15 @@
+FROM golang:1.25-alpine
+
+WORKDIR /app
+
+RUN go install github.com/air-verse/air@latest
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+ARG SERVICE_NAME
+COPY ./${SERVICE_NAME} ./${SERVICE_NAME}
+
+WORKDIR /app/${SERVICE_NAME}
+
+CMD ["air"]

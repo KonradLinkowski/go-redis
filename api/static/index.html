@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: black;
+        color: white;
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Upload an image</h1>
+    <form enctype="multipart/form-data">
+      <input type="file" name="image" accept=".jpeg,.jpg,.png,.gif" />
+      <button type="submit">Upload</button>
+    </form>
+    <script>
+      const eventSource = new EventSource('/events');
+      eventSource.onmessage = (event) => {
+        const img = document.createElement('img');
+        img.src = `data:image/jpeg;base64,${event.data}`;
+        img.style.maxWidth = '200px';
+        img.style.margin = '10px';
+        document.body.appendChild(img);
+      };
+    </script>
+    <script>
+      const uploadForm = document.querySelector('form');
+      uploadForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(uploadForm);
+        fetch('/upload', {
+          method: 'POST',
+          body: formData,
+        });
+      });
+    </script>
+  </body>
+</html>

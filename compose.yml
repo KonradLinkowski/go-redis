@@ -1,0 +1,45 @@
+
+x-common-variables: &common-variables
+  REDIS_ADDR: redis:6379
+  MINIO_ENDPOINT: minio:9000
+  MINIO_ROOT_USER: admin
+  MINIO_ROOT_PASSWORD: password123
+  MINIO_UPLOADED_BUCKET_NAME: uploaded
+  MINIO_PROCESSED_BUCKET_NAME: processed
+services:
+  api:
+    build: .
+    working_dir: /app/api
+    environment:
+      <<: *common-variables
+      SERVICE_NAME: api
+    ports:
+      - '8000:8000'
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - minio
+  worker:
+    build: .
+    working_dir: /app/worker
+    environment:
+      <<: *common-variables
+      SERVICE_NAME: worker
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - minio
+  redis:
+    image: redis:alpine
+    ports:
+      - '6379:6379'
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      <<: *common-variables
