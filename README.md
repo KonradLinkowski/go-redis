@@ -2,6 +2,8 @@
 
 A high-performance, asynchronous image processing service built with Go. This application allows users to upload images, which are then processed into black-and-white versions using a distributed worker pattern.
 
+![Example gif](./docs/example.gif)
+
 ## Features
 
 * Asynchronous Processing: Uses Redis Streams for reliable task queuing.
